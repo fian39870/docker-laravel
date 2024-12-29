@@ -1,0 +1,34 @@
+version: "3.8"
+services:
+    app:
+        build:
+            dockerfile: ahmadsofian/laravel-app:v1
+        working_dir: /var/www
+        volumes:
+            - ./:/var/www
+        depends_on:
+            - "database"
+    web:
+        build:
+            dockerfile: ahmadsofian/laravel-nginx:v1
+        working_dir: /var/www
+        volumes:
+            - ./:/var/www
+        depends_on:
+            - "app"
+        ports:
+            - 80:80
+    database:
+        image: mysql:8.0
+        volumes:
+            - dbdata:/var/lib/mysql
+        environment:
+            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+            MYSQL_USER: ${DB_USERNAME}
+        ports:
+            - 33061:3306
+
+volumes:
+    dbdata:
